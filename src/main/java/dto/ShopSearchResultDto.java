@@ -5,6 +5,7 @@ public class ShopSearchResultDto {
     private String name;
     private String url;
     private String price;
+    private Integer priceNum;
     private String availability;
 
     public String getShop() {
@@ -47,12 +48,21 @@ public class ShopSearchResultDto {
         this.availability = availability;
     }
 
+    public Integer getPriceNum() {
+        return priceNum;
+    }
+
+    public void setPriceNum(Integer priceNum) {
+        this.priceNum = priceNum;
+    }
+
     @Override
     public String toString() {
         return getShop() + "\n" +
                 "\tname = " + getName() + "\n" +
                 "\turl = " + getUrl() + "\n" +
                 "\tprice = " + getPrice() + "\n" +
+                "\tpriceNum = " + getPriceNum() + "\n" +
                 "\tavailability = " + getAvailability() + "\n";
     }
 }
