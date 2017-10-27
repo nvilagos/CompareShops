@@ -10,7 +10,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dto.ShopSearchResultDto;
-import service.utils.ServiceUtils;
 
 public class DeltaVision implements ShopInterface {
     public static final String BASE_URL = "http://www.deltavision.hu";
@@ -38,29 +37,24 @@ public class DeltaVision implements ShopInterface {
     public List<ShopSearchResultDto> getResults(Document resultPage) {
         List<ShopSearchResultDto> results = new ArrayList<ShopSearchResultDto>();
 
-        try {
-            Elements items = resultPage.select(".item");
-            for (Element item : items) {
-                Element href = item.select(".product-name").first().select("a").first();
-                String name = href.text();
-                String url = href.attr("href");
-                String price = item.select(".special-price").first().text() +
-                        " (" + item.select(".old-price").first().text() + ")";
-                String availability = item
-                        .select(".actions").first()
-                        .select(".button.btn-cart").first().text();
+        Elements items = resultPage.select(".item");
+        for (Element item : items) {
+            Element href = item.select(".product-name").first().select("a").first();
+            String name = href.text();
+            String url = href.attr("href");
+            String price = item.select(".special-price").first().text() +
+                    " (" + item.select(".old-price").first().text() + ")";
+            String availability = item
+                    .select(".actions").first()
+                    .select(".button.btn-cart").first().text();
 
-                ShopSearchResultDto searchResultDto = new ShopSearchResultDto();
-                searchResultDto.setShop(SHOP_NAME);
-                searchResultDto.setName(name);
-                searchResultDto.setUrl(url);
-                searchResultDto.setPrice(price);
-                searchResultDto.setPriceNum(ServiceUtils.priceExtractor(price));
-                searchResultDto.setAvailability(availability);
-                results.add(searchResultDto);
-            }
-        } catch (NullPointerException e) {
-            System.out.println("No result was found for " + getShopName());
+            ShopSearchResultDto searchResultDto = new ShopSearchResultDto();
+            searchResultDto.setShop(SHOP_NAME);
+            searchResultDto.setName(name);
+            searchResultDto.setUrl(url);
+            searchResultDto.setPrice(price);
+            searchResultDto.setAvailability(availability);
+            results.add(searchResultDto);
         }
 
         return results;
