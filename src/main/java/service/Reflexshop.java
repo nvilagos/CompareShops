@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import dto.ShopSearchResultDto;
+import service.utils.ServiceUtils;
 
 public class Reflexshop implements ShopInterface{
     public static final String BASE_URL = "https://reflexshop.hu";
@@ -37,21 +38,26 @@ public class Reflexshop implements ShopInterface{
     public List<ShopSearchResultDto> getResults(Document resultPage) {
         List<ShopSearchResultDto> results = new ArrayList<ShopSearchResultDto>();
 
-        Elements items = resultPage.select(".snapshot_vertical_product");
-        for (Element item : items) {
-            Element href = item.select(".list-productname-link").first();
-            String name = href.text();
-            String url = href.attr("href");
-            String price = item.select(".list_price").first().text();
-            String availability = item.select(".list_stock").first().text();
+        try {
+            Elements items = resultPage.select(".snapshot_vertical_product");
+            for (Element item : items) {
+                Element href = item.select(".list-productname-link").first();
+                String name = href.text();
+                String url = href.attr("href");
+                String price = item.select(".list_price").first().text();
+                String availability = item.select(".list_stock").first().text();
 
-            ShopSearchResultDto searchResultDto = new ShopSearchResultDto();
-            searchResultDto.setShop(SHOP_NAME);
-            searchResultDto.setName(name);
-            searchResultDto.setUrl(url);
-            searchResultDto.setPrice(price);
-            searchResultDto.setAvailability(availability);
-            results.add(searchResultDto);
+                ShopSearchResultDto searchResultDto = new ShopSearchResultDto();
+                searchResultDto.setShop(SHOP_NAME);
+                searchResultDto.setName(name);
+                searchResultDto.setUrl(url);
+                searchResultDto.setPrice(price);
+                searchResultDto.setPriceNum(ServiceUtils.priceExtractor(price));
+                searchResultDto.setAvailability(availability);
+                results.add(searchResultDto);
+            }
+        } catch (NullPointerException e) {
+            System.out.println("No result was found for " + getShopName());
         }
 
         return results;

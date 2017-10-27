@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 
+import dto.ErrorMessageDto;
 import dto.ShopSearchResultDto;
 import service.DeltaVision;
 import service.Gemklub;
@@ -46,7 +47,13 @@ public class Prices {
         System.out.println("Request got for: " + productName);
 
         Gson gson = new Gson();
+        if (listOfItems.size() <= 0) {
+            ErrorMessageDto errorMessageDto = new ErrorMessageDto();
+            errorMessageDto.setErrorMessage("No result was found.");
+            return gson.toJson(errorMessageDto);
+        }
         return gson.toJson(listOfItems);
+
 
         /*
         List<ShopSearchResultDto> szellemlovasResults =
