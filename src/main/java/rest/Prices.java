@@ -1,6 +1,7 @@
 package rest;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,19 +38,43 @@ public class Prices {
         DeltaVision deltaVision = new DeltaVision();
         Metagames metagames = new Metagames();
 
-        List<ShopSearchResultDto> listOfItems = new ArrayList<ShopSearchResultDto>();
-        listOfItems.addAll(szellemlovas.getAll(productName));
-        listOfItems.addAll(gemklub.getAll(productName));
-        listOfItems.addAll(reflexshop.getAll(productName));
-        listOfItems.addAll(deltaVision.getAll(productName));
-        listOfItems.addAll(metagames.getAll(productName));
-
         System.out.println("Request got for: " + productName);
+
+        List<ShopSearchResultDto> listOfItems = new ArrayList<ShopSearchResultDto>();
+        try {
+            listOfItems.addAll(szellemlovas.getAll(productName));
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            listOfItems.addAll(gemklub.getAll(productName));
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            listOfItems.addAll(reflexshop.getAll(productName));
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            listOfItems.addAll(deltaVision.getAll(productName));
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            listOfItems.addAll(metagames.getAll(productName));
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        }
 
         Gson gson = new Gson();
         if (listOfItems.size() <= 0) {
             ErrorMessageDto errorMessageDto = new ErrorMessageDto();
-            errorMessageDto.setErrorMessage("No result was found.");
+            errorMessageDto.setErrorMessage("No result was found for: '" + productName +"'.");
             return gson.toJson(errorMessageDto);
         }
         return gson.toJson(listOfItems);
